@@ -9,7 +9,7 @@
 import Foundation
 
 /*
- Inspired by NSCache open source implementation:
+ Inspired by open source NSCache implementation:
  https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/NSCache.swift
  But own implementation is compatible with Swift value types.
  */
@@ -45,7 +45,7 @@ public final class FiniteCache<Key: Hashable, Value> {
     
     // MARK: - Public
     
-    public func object(forKey key: Key) -> Value? {
+    public func value(forKey key: Key) -> Value? {
         lock.lock()
         let result = entries[key]?.value
         lock.unlock()

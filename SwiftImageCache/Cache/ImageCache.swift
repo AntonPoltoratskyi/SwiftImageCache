@@ -13,8 +13,13 @@ final class ImageCache {
     let namespace: String
     let directoryURL: URL
     
+    let memoryCache: MemoryCache<NSURL, UIImage>
+    
     init(namespace: String, directoryURL: URL) {
         self.namespace = namespace
         self.directoryURL = directoryURL
+        
+        let config = ImageCacheConfig(isMemoryCacheEnabled: true, isWeakMemoryCacheEnabled: true)
+        self.memoryCache = MemoryCache(config: config, costHandler: { $0.cacheCost })
     }
 }
