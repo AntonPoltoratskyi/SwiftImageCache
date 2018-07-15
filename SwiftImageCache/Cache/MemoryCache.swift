@@ -24,6 +24,14 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     public typealias ValueCostHandler = (Value) -> Int
     
+    public var maxMemoryCost: Int? {
+        didSet { cache.totalCostLimit = maxMemoryCost }
+    }
+    
+    public var maxMemoryCount: Int? {
+        didSet { cache.totalCountLimit = maxMemoryCount }
+    }
+    
     
     // MARK: - Init
     
@@ -33,6 +41,8 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         
         cache.totalCostLimit = config.maxCacheSize
         cache.totalCountLimit = nil
+        
+        maxMemoryCost = cache.totalCostLimit
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveMemoryWarning),
