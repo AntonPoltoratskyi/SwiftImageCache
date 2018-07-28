@@ -115,11 +115,14 @@ public final class FiniteCache<Key: Hashable, Value> {
     
     // MARK: - Private
     
+    // MARK: Storage Limitation
+    
     private func trimToLimits() {
-        func delete(_ entry: Entry) {
+        func clear(_ entry: Entry) {
             totalCost -= entry.cost
             
-            remove(entry) // self.head will be changed to next entry in remove(_:)
+            // self.head will be changed to next entry in remove(_:)
+            remove(entry)
             entries[entry.key] = nil
         }
         
@@ -130,7 +133,7 @@ public final class FiniteCache<Key: Hashable, Value> {
                     break
                 }
                 purgeAmount -= entry.cost
-                delete(entry)
+                clear(entry)
             }
         }
         
@@ -141,10 +144,12 @@ public final class FiniteCache<Key: Hashable, Value> {
                     break
                 }
                 purgeCount -= 1
-                delete(entry)
+                clear(entry)
             }
         }
     }
+    
+    // MARK: Linked List
     
     private func insert(_ entry: Entry) {
         guard var currentElement = head else {

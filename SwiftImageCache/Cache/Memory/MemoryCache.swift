@@ -10,19 +10,15 @@ import UIKit
 
 public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
-    private let config: ImageCacheConfig
+    private let config: MemoryCacheConfig
     
     /// Cache with ability to setup limits for byte size and count of objects.
     private let cache: FiniteCache<Key, Value> = FiniteCache()
     
-    /// Cache which won't be cleared when memory warning occurs because values are retained by other objects.
+    /// Cache that won't be cleared when memory warning occurs because values are retained by other objects.
     private let weakCache: NSMapTable<Key, Value> = NSMapTable(keyOptions: .strongMemory, valueOptions: .weakMemory)
     
-    private let weakCacheLock = NSLock()
-    
-    private let valueCostHandler: ValueCostHandler?
-    
-    public typealias ValueCostHandler = (Value) -> Int
+    private let costResolver: AnyCacheCostResolver<Value>
     
     public var maxMemoryCost: Int? {
         didSet { cache.totalCostLimit = maxMemoryCost }
@@ -32,12 +28,14 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         didSet { cache.totalCountLimit = maxMemoryCount }
     }
     
+    private let weakCacheLock = NSLock()
+    
     
     // MARK: - Init
     
-    public init(config: ImageCacheConfig, costHandler: ValueCostHandler?) {
+    init<T: CacheCostResolver>(config: MemoryCacheConfig, costResolver: T) where T.Object == Value {
         self.config = config
-        self.valueCostHandler = costHandler
+        self.costResolver = AnyCacheCostResolverBox(resolver: costResolver)
         
         cache.totalCostLimit = config.maxCacheSize
         cache.totalCountLimit = nil
@@ -84,7 +82,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         
         object = weakCache.object(forKey: key)
         if let object = object {
-            let cost = valueCostHandler?(object) ?? 0
+            let cost = costResolver.cost(for: object)
             cache.setValue(object, forKey: key, cost: cost)
         }
         
