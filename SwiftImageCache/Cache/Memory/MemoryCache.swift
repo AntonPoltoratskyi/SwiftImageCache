@@ -10,13 +10,15 @@ import UIKit
 
 public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
-    private let config: MemoryCacheConfig
+    private let config: Config
     
     /// Cache with ability to setup limits for byte size and count of objects.
     private let cache: FiniteCache<Key, Value> = FiniteCache()
     
     /// Cache that won't be cleared when memory warning occurs because values are retained by other objects.
     private let weakCache: NSMapTable<Key, Value> = NSMapTable(keyOptions: .strongMemory, valueOptions: .weakMemory)
+    
+    private let weakCacheLock = NSLock()
     
     private let costResolver: AnyCacheCostResolver<Value>
     
@@ -28,12 +30,10 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         didSet { cache.totalCountLimit = maxMemoryCount }
     }
     
-    private let weakCacheLock = NSLock()
-    
     
     // MARK: - Init
     
-    init<T: CacheCostResolver>(config: MemoryCacheConfig, costResolver: T) where T.Object == Value {
+    init<T: CacheCostResolver>(config: Config, costResolver: T) where T.Object == Value {
         self.config = config
         self.costResolver = AnyCacheCostResolverBox(resolver: costResolver)
         
@@ -64,7 +64,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     public func setObject(_ value: Value, forKey key: Key) {
         cache.setValue(value, forKey: key)
-        guard config.isWeakMemoryCacheEnabled else {
+        guard config.isWeakCacheEnabled else {
             return
         }
         weakCacheLock.lock()
@@ -74,7 +74,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     public func object(forKey key: Key) -> Value? {
         var object = cache.value(forKey: key)
-        guard object == nil, config.isWeakMemoryCacheEnabled else {
+        guard object == nil, config.isWeakCacheEnabled else {
             return object
         }
         
@@ -93,7 +93,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     public func removeObject(forKey key: Key) {
         cache.removeValue(forKey: key)
-        guard config.isWeakMemoryCacheEnabled else {
+        guard config.isWeakCacheEnabled else {
             return
         }
         weakCacheLock.lock()
@@ -103,11 +103,36 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     public func removeAll() {
         cache.removeAll()
-        guard config.isWeakMemoryCacheEnabled else {
+        guard config.isWeakCacheEnabled else {
             return
         }
         weakCacheLock.lock()
         weakCache.removeAllObjects()
         weakCacheLock.unlock()
+    }
+}
+
+// MARK: - Config
+
+extension MemoryCache {
+    
+    public struct Config {
+        
+        /// when true - cache will store weak references to currently retained cache objects
+        public let isWeakCacheEnabled: Bool
+        
+        /// Max cache age in seconds
+        public let maxCacheAge: Int
+        
+        /// Max cache size in bytes
+        public let maxCacheSize: Int?
+        
+        public init(isWeakCacheEnabled: Bool = true,
+                    maxCacheAge: Int = 60 * 60 * 24 * 7,
+                    maxCacheSize: Int? = nil) {
+            self.isWeakCacheEnabled = isWeakCacheEnabled
+            self.maxCacheAge = maxCacheAge
+            self.maxCacheSize = maxCacheSize
+        }
     }
 }

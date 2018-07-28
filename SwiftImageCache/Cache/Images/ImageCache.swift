@@ -11,6 +11,7 @@ import Foundation
 public final class ImageCache: ImageCacheInput {
 
     private let namespace: String
+    
     private let directoryURL: URL
     
     private let memoryCache: MemoryCache<NSURL, UIImage>
@@ -39,9 +40,7 @@ public final class ImageCache: ImageCacheInput {
     public init(namespace: String, directoryURL: URL) {
         self.namespace = namespace
         self.directoryURL = directoryURL.appendingPathComponent(namespace)
-        
-        let config = MemoryCacheConfig()
-        self.memoryCache = MemoryCache(config: config, costResolver: ImageCacheCostResolver())
+        self.memoryCache = MemoryCache(config: .init(), costResolver: ImageCacheCostResolver())
     }
     
     

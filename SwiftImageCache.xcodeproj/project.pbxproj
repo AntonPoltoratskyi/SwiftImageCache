@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7920FB4E390015164D /* UIImageView+Cache.swift */; };
 		8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7B20FB4F160015164D /* ImageCache.swift */; };
-		8510BA7F20FB50D80015164D /* MemoryCacheConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7E20FB50D80015164D /* MemoryCacheConfig.swift */; };
 		8510BA8120FB53060015164D /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA8020FB53060015164D /* MemoryCache.swift */; };
 		8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA8720FB5D9C0015164D /* FiniteCache.swift */; };
 		85112246210CE9E00038D6BF /* CacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112245210CE9E00038D6BF /* CacheCostResolver.swift */; };
@@ -22,7 +21,6 @@
 /* Begin PBXFileReference section */
 		8510BA7920FB4E390015164D /* UIImageView+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Cache.swift"; sourceTree = "<group>"; };
 		8510BA7B20FB4F160015164D /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
-		8510BA7E20FB50D80015164D /* MemoryCacheConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCacheConfig.swift; sourceTree = "<group>"; };
 		8510BA8020FB53060015164D /* MemoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCache.swift; sourceTree = "<group>"; };
 		8510BA8720FB5D9C0015164D /* FiniteCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiniteCache.swift; sourceTree = "<group>"; };
 		85112245210CE9E00038D6BF /* CacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheCostResolver.swift; sourceTree = "<group>"; };
@@ -76,7 +74,6 @@
 		8511224C210CED4F0038D6BF /* Memory */ = {
 			isa = PBXGroup;
 			children = (
-				8510BA7E20FB50D80015164D /* MemoryCacheConfig.swift */,
 				8510BA8020FB53060015164D /* MemoryCache.swift */,
 				8510BA8720FB5D9C0015164D /* FiniteCache.swift */,
 			);
@@ -202,7 +199,6 @@
 				85112248210CECED0038D6BF /* ImageCacheCostResolver.swift in Sources */,
 				8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */,
 				8510BA8120FB53060015164D /* MemoryCache.swift in Sources */,
-				8510BA7F20FB50D80015164D /* MemoryCacheConfig.swift in Sources */,
 				8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */,
 				8511224A210CED0B0038D6BF /* AnyCacheCostResolver.swift in Sources */,
 				8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */,
