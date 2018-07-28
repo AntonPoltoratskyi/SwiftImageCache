@@ -15,6 +15,8 @@
 		85112248210CECED0038D6BF /* ImageCacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */; };
 		8511224A210CED0B0038D6BF /* AnyCacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */; };
 		8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8511224E210CF11B0038D6BF /* ImageCacheInput.swift */; };
+		85112252210D02420038D6BF /* FileResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112251210D02420038D6BF /* FileResolver.swift */; };
+		85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112253210D10FC0038D6BF /* ImageDecoder.swift */; };
 		8566886B20F78BAD00BC8422 /* SwiftImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 8566886920F78BAD00BC8422 /* SwiftImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -27,6 +29,8 @@
 		85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheCostResolver.swift; sourceTree = "<group>"; };
 		85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCacheCostResolver.swift; sourceTree = "<group>"; };
 		8511224E210CF11B0038D6BF /* ImageCacheInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheInput.swift; sourceTree = "<group>"; };
+		85112251210D02420038D6BF /* FileResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileResolver.swift; sourceTree = "<group>"; };
+		85112253210D10FC0038D6BF /* ImageDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDecoder.swift; sourceTree = "<group>"; };
 		8566886620F78BAD00BC8422 /* SwiftImageCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftImageCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8566886920F78BAD00BC8422 /* SwiftImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftImageCache.h; sourceTree = "<group>"; };
 		8566886A20F78BAD00BC8422 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,6 +89,8 @@
 			children = (
 				8511224E210CF11B0038D6BF /* ImageCacheInput.swift */,
 				8510BA7B20FB4F160015164D /* ImageCache.swift */,
+				85112251210D02420038D6BF /* FileResolver.swift */,
+				85112253210D10FC0038D6BF /* ImageDecoder.swift */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -197,12 +203,14 @@
 			files = (
 				8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */,
 				85112248210CECED0038D6BF /* ImageCacheCostResolver.swift in Sources */,
+				85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */,
 				8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */,
 				8510BA8120FB53060015164D /* MemoryCache.swift in Sources */,
 				8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */,
 				8511224A210CED0B0038D6BF /* AnyCacheCostResolver.swift in Sources */,
 				8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */,
 				85112246210CE9E00038D6BF /* CacheCostResolver.swift in Sources */,
+				85112252210D02420038D6BF /* FileResolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

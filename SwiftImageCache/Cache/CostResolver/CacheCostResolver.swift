@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CacheCostResolver {
+protocol CacheCostResolver: class {
     associatedtype Object
     func cost(for object: Object) -> Int
 }
