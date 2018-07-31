@@ -82,12 +82,16 @@ public final class ImageCache: ImageCacheInput {
     
     public func removeImage(forKey key: ImageCacheKey) {
         removeImageFromMemory(forKey: key)
-        removeImageFromDisk(forKey: key)
+        diskQueue.async {
+            self.removeImageFromDisk(forKey: key)
+        }
     }
     
     public func addImage(_ image: UIImage, forKey key: ImageCacheKey) {
         saveImageToMemory(image, forKey: key)
-        saveImageToDisk(image, forKey: key)
+        diskQueue.async {
+            self.saveImageToDisk(image, forKey: key)
+        }
     }
     
     public func clearMemory() {
@@ -102,8 +106,29 @@ public final class ImageCache: ImageCacheInput {
         }
     }
     
+    
+    // MARK: - Notifications
+    
+    @objc private func applicationDidEnterBackground() {
+        // delete old files in background asynchronously
+        deleteExpiredFiles()
+    }
+    
+    @objc private func applicationWillTerminate() {
+        deleteExpiredFiles()
+    }
+    
+    private func deleteExpiredFiles() {
+        // TODO: delete old files
+    }
+}
+
+// MARK: - Utils
+
+extension ImageCache {
+    
     private func cacheFilename(forKey key: ImageCacheKey) -> String {
-         return fileResolver.filename(for: key)
+        return fileResolver.filename(for: key)
     }
     
     private func cacheURL(for filename: String) -> URL {
@@ -135,13 +160,11 @@ public final class ImageCache: ImageCacheInput {
     }
     
     private func saveImageToDisk(_ image: UIImage, forKey key: ImageCacheKey) {
-        diskQueue.async {
-            guard let data = UIImagePNGRepresentation(image) else {
-                return
-            }
-            let filename = self.cacheFilename(forKey: key)
-            try? self.saveImageDataToDisk(data, filename: filename)
+        guard let data = UIImagePNGRepresentation(image) else {
+            return
         }
+        let filename = self.cacheFilename(forKey: key)
+        try? self.saveImageDataToDisk(data, filename: filename)
     }
     
     private func saveImageDataToDisk(_ data: Data, filename: String) throws {
@@ -164,27 +187,9 @@ public final class ImageCache: ImageCacheInput {
     }
     
     private func removeImageFromDisk(forKey key: ImageCacheKey) {
-        diskQueue.async {
-            let filename = self.cacheFilename(forKey: key)
-            let fileURL = self.cacheURL(for: filename)
-            try? self.fileManager.removeItem(at: fileURL)
-        }
-    }
-    
-    
-    // MARK: - Notifications
-    
-    @objc private func applicationDidEnterBackground() {
-        // delete old files in background asynchronously
-        deleteExpiredFiles()
-    }
-    
-    @objc private func applicationWillTerminate() {
-        deleteExpiredFiles()
-    }
-    
-    private func deleteExpiredFiles() {
-        // TODO: delete old files
+        let filename = self.cacheFilename(forKey: key)
+        let fileURL = self.cacheURL(for: filename)
+        try? self.fileManager.removeItem(at: fileURL)
     }
 }
 

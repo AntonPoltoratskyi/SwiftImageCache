@@ -15,6 +15,7 @@ public protocol FileResolver: class {
 final class DefaultFileResolver: FileResolver {
     
     func filename(for key: ImageCacheKey) -> String {
+        // TODO: MD5
         return key.absoluteString
     }
 }

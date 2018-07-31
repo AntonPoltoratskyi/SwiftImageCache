@@ -89,10 +89,18 @@
 			children = (
 				8511224E210CF11B0038D6BF /* ImageCacheInput.swift */,
 				8510BA7B20FB4F160015164D /* ImageCache.swift */,
+				851B7AC12110CFA400C95747 /* Depedencies */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		851B7AC12110CFA400C95747 /* Depedencies */ = {
+			isa = PBXGroup;
+			children = (
 				85112251210D02420038D6BF /* FileResolver.swift */,
 				85112253210D10FC0038D6BF /* ImageDecoder.swift */,
 			);
-			path = Images;
+			path = Depedencies;
 			sourceTree = "<group>";
 		};
 		8566885C20F78BAD00BC8422 = {
