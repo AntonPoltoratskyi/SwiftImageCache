@@ -9,22 +9,22 @@
 import Foundation
 
 /// Type eraser for CacheCostResolver protocol
-class AnyCacheCostResolver<Object>: CacheCostResolver {
+public class AnyCacheCostResolver<Object>: CacheCostResolver {
     
-    func cost(for object: Object) -> Int {
+    public func cost(for object: Object) -> Int {
         fatalError("\(#function) not implemented")
     }
 }
 
-final class AnyCacheCostResolverBox<Resolver: CacheCostResolver>: AnyCacheCostResolver<Resolver.Object> {
+public final class AnyCacheCostResolverBox<Resolver: CacheCostResolver>: AnyCacheCostResolver<Resolver.Object> {
     
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    public init(resolver: Resolver) {
         self.resolver = resolver
     }
     
-    override func cost(for object: Resolver.Object) -> Int {
+    public override func cost(for object: Resolver.Object) -> Int {
         return resolver.cost(for: object)
     }
 }

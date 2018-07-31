@@ -60,40 +60,30 @@
 		8510BA8320FB53180015164D /* Cache */ = {
 			isa = PBXGroup;
 			children = (
-				8511224D210CF1080038D6BF /* Images */,
-				8511224C210CED4F0038D6BF /* Memory */,
-				8511224B210CED120038D6BF /* CostResolver */,
+				8511224D210CF1080038D6BF /* ImageCache */,
+				8511224C210CED4F0038D6BF /* MemoryCache */,
 			);
 			path = Cache;
 			sourceTree = "<group>";
 		};
-		8511224B210CED120038D6BF /* CostResolver */ = {
-			isa = PBXGroup;
-			children = (
-				85112245210CE9E00038D6BF /* CacheCostResolver.swift */,
-				85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */,
-				85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */,
-			);
-			path = CostResolver;
-			sourceTree = "<group>";
-		};
-		8511224C210CED4F0038D6BF /* Memory */ = {
+		8511224C210CED4F0038D6BF /* MemoryCache */ = {
 			isa = PBXGroup;
 			children = (
 				8510BA8020FB53060015164D /* MemoryCache.swift */,
 				8510BA8720FB5D9C0015164D /* FiniteCache.swift */,
+				851B7AC42110D54C00C95747 /* Dependencies */,
 			);
-			path = Memory;
+			path = MemoryCache;
 			sourceTree = "<group>";
 		};
-		8511224D210CF1080038D6BF /* Images */ = {
+		8511224D210CF1080038D6BF /* ImageCache */ = {
 			isa = PBXGroup;
 			children = (
 				8511224E210CF11B0038D6BF /* ImageCacheInput.swift */,
 				8510BA7B20FB4F160015164D /* ImageCache.swift */,
 				851B7AC12110CFA400C95747 /* Depedencies */,
 			);
-			path = Images;
+			path = ImageCache;
 			sourceTree = "<group>";
 		};
 		851B7AC12110CFA400C95747 /* Depedencies */ = {
@@ -104,6 +94,16 @@
 				851B7AC22110CFF500C95747 /* ImageEncoder.swift */,
 			);
 			path = Depedencies;
+			sourceTree = "<group>";
+		};
+		851B7AC42110D54C00C95747 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				85112245210CE9E00038D6BF /* CacheCostResolver.swift */,
+				85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */,
+				85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */,
+			);
+			path = Dependencies;
 			sourceTree = "<group>";
 		};
 		8566885C20F78BAD00BC8422 = {

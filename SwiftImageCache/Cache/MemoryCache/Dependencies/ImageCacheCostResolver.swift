@@ -8,9 +8,9 @@
 
 import UIKit
 
-final class ImageCacheCostResolver: CacheCostResolver {
+public final class ImageCacheCostResolver: CacheCostResolver {
     
-    func cost(for object: UIImage) -> Int {
+    public func cost(for object: UIImage) -> Int {
         let scale = object.scale
         let width = object.size.width * scale
         let height = object.size.height * scale

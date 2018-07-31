@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// A facade for memory and disk cache.
 public final class ImageCache: ImageCacheInput {
 
     private let config: Config

@@ -13,7 +13,7 @@ public protocol ImageEncoder: class {
 }
 
 public final class PNGImageEncoder: ImageEncoder {
-    
+
     public func encode(image: UIImage) -> Data? {
         return UIImagePNGRepresentation(image)
     }

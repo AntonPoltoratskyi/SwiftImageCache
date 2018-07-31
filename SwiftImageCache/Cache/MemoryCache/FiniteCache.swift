@@ -32,7 +32,7 @@ public final class FiniteCache<Key: Hashable, Value> {
     private var entries: [Key: Entry] = [:]
     private var totalCost = 0
     private var head: Entry?
-    private var lock = NSLock()
+    private let lock = NSLock()
     
     public var totalCostLimit: Int?
     public var totalCountLimit: Int?
