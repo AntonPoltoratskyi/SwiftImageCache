@@ -16,6 +16,8 @@ public final class ImageCache: ImageCacheInput {
     
     private let fileResolver: FileResolver
     
+    private let imageEncoder: ImageEncoder
+
     private let imageDecoder: ImageDecoder
     
     private let fileManager: FileManager
@@ -47,6 +49,7 @@ public final class ImageCache: ImageCacheInput {
         self.config = config
         self.memoryCache = MemoryCache(config: .init(), costResolver: ImageCacheCostResolver())
         self.fileResolver = dependencies.fileResolver
+        self.imageEncoder = dependencies.imageEncoder
         self.imageDecoder = dependencies.imageDecoder
         self.fileManager = .default
         
@@ -83,14 +86,14 @@ public final class ImageCache: ImageCacheInput {
     public func removeImage(forKey key: ImageCacheKey) {
         removeImageFromMemory(forKey: key)
         diskQueue.async {
-            self.removeImageFromDisk(forKey: key)
+            try? self.removeImageFromDisk(forKey: key)
         }
     }
     
     public func addImage(_ image: UIImage, forKey key: ImageCacheKey) {
         saveImageToMemory(image, forKey: key)
         diskQueue.async {
-            self.saveImageToDisk(image, forKey: key)
+            try? self.saveImageToDisk(image, forKey: key)
         }
     }
     
@@ -159,12 +162,12 @@ extension ImageCache {
         }
     }
     
-    private func saveImageToDisk(_ image: UIImage, forKey key: ImageCacheKey) {
-        guard let data = UIImagePNGRepresentation(image) else {
+    private func saveImageToDisk(_ image: UIImage, forKey key: ImageCacheKey) throws {
+        guard let data = imageEncoder.encode(image: image) else {
             return
         }
-        let filename = self.cacheFilename(forKey: key)
-        try? self.saveImageDataToDisk(data, filename: filename)
+        let filename = cacheFilename(forKey: key)
+        try saveImageDataToDisk(data, filename: filename)
     }
     
     private func saveImageDataToDisk(_ data: Data, filename: String) throws {
@@ -186,10 +189,10 @@ extension ImageCache {
         memoryCache.removeObject(forKey: key as NSURL)
     }
     
-    private func removeImageFromDisk(forKey key: ImageCacheKey) {
-        let filename = self.cacheFilename(forKey: key)
-        let fileURL = self.cacheURL(for: filename)
-        try? self.fileManager.removeItem(at: fileURL)
+    private func removeImageFromDisk(forKey key: ImageCacheKey) throws {
+        let filename = cacheFilename(forKey: key)
+        let fileURL = cacheURL(for: filename)
+        try fileManager.removeItem(at: fileURL)
     }
 }
 
@@ -211,10 +214,12 @@ extension ImageCache {
     
     public struct Dependencies {
         public let fileResolver: FileResolver
+        public let imageEncoder: ImageEncoder
         public let imageDecoder: ImageDecoder
         
-        public init(fileResolver: FileResolver, imageDecoder: ImageDecoder) {
+        public init(fileResolver: FileResolver, imageEncoder: ImageEncoder, imageDecoder: ImageDecoder) {
             self.fileResolver = fileResolver
+            self.imageEncoder = imageEncoder
             self.imageDecoder = imageDecoder
         }
     }

@@ -12,9 +12,10 @@ public protocol ImageDecoder: class {
     func image(from data: Data) -> UIImage?
 }
 
-final class DefaultImageDecoder: ImageDecoder {
+/// Supports default 'jpeg' and 'png' format.
+public final class DefaultImageDecoder: ImageDecoder {
     
-    func image(from data: Data) -> UIImage? {
+    public func image(from data: Data) -> UIImage? {
         return UIImage(data: data, scale: UIScreen.main.scale)
     }
 }
