@@ -48,7 +48,7 @@ public final class ImageCache: ImageCacheInput {
     
     public init(config: Config, dependencies: Dependencies) {
         self.config = config
-        self.memoryCache = MemoryCache(config: .init(), costResolver: ImageCacheCostResolver())
+        self.memoryCache = MemoryCache(config: .init(), costResolver: ImageCostResolver())
         self.fileResolver = dependencies.fileResolver
         self.imageEncoder = dependencies.imageEncoder
         self.imageDecoder = dependencies.imageDecoder
@@ -74,7 +74,7 @@ public final class ImageCache: ImageCacheInput {
     
     // MARK: - Public API
     
-    public func image(forKey key: ImageCacheKey) -> UIImage? {
+    public func image(forKey key: ImageKey) -> UIImage? {
         if let image = imageFromMemory(forKey: key) {
             return image
         }
@@ -84,14 +84,14 @@ public final class ImageCache: ImageCacheInput {
         }
     }
     
-    public func removeImage(forKey key: ImageCacheKey) {
+    public func removeImage(forKey key: ImageKey) {
         removeImageFromMemory(forKey: key)
         diskQueue.async {
             try? self.removeImageFromDisk(forKey: key)
         }
     }
     
-    public func addImage(_ image: UIImage, forKey key: ImageCacheKey) {
+    public func addImage(_ image: UIImage, forKey key: ImageKey) {
         saveImageToMemory(image, forKey: key)
         diskQueue.async {
             try? self.saveImageToDisk(image, forKey: key)
@@ -131,7 +131,7 @@ public final class ImageCache: ImageCacheInput {
 
 extension ImageCache {
     
-    private func cacheFilename(forKey key: ImageCacheKey) -> String {
+    private func cacheFilename(forKey key: ImageKey) -> String {
         return fileResolver.filename(for: key)
     }
     
@@ -139,14 +139,14 @@ extension ImageCache {
         return config.directoryURL.appendingPathComponent(filename)
     }
     
-    private func imageFromMemory(forKey key: ImageCacheKey) -> UIImage? {
+    private func imageFromMemory(forKey key: ImageKey) -> UIImage? {
         guard config.isMemoryCacheEnabled else {
             return nil
         }
         return memoryCache.object(forKey: key as NSURL)
     }
     
-    private func imageFromDisk(forKey key: ImageCacheKey) -> UIImage? {
+    private func imageFromDisk(forKey key: ImageKey) -> UIImage? {
         let filename = cacheFilename(forKey: key)
         let fileURL = cacheURL(for: filename)
         do {
@@ -157,13 +157,13 @@ extension ImageCache {
         }
     }
     
-    private func saveImageToMemory(_ image: UIImage, forKey key: ImageCacheKey) {
+    private func saveImageToMemory(_ image: UIImage, forKey key: ImageKey) {
         if config.isMemoryCacheEnabled {
             memoryCache.setObject(image, forKey: key as NSURL)
         }
     }
     
-    private func saveImageToDisk(_ image: UIImage, forKey key: ImageCacheKey) throws {
+    private func saveImageToDisk(_ image: UIImage, forKey key: ImageKey) throws {
         guard let data = imageEncoder.encode(image: image) else {
             return
         }
@@ -186,11 +186,11 @@ extension ImageCache {
         }
     }
     
-    private func removeImageFromMemory(forKey key: ImageCacheKey) {
+    private func removeImageFromMemory(forKey key: ImageKey) {
         memoryCache.removeObject(forKey: key as NSURL)
     }
     
-    private func removeImageFromDisk(forKey key: ImageCacheKey) throws {
+    private func removeImageFromDisk(forKey key: ImageKey) throws {
         let filename = cacheFilename(forKey: key)
         let fileURL = cacheURL(for: filename)
         try fileManager.removeItem(at: fileURL)

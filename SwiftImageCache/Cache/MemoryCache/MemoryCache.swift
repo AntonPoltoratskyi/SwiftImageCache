@@ -20,7 +20,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     private let weakCacheLock = NSLock()
     
-    private let costResolver: AnyCacheCostResolver<Value>
+    private let memoryCostResolver: AnyMemoryCostResolver<Value>
     
     public var maxMemoryCost: Int? {
         didSet { cache.totalCostLimit = maxMemoryCost }
@@ -33,9 +33,9 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     
     // MARK: - Init
     
-    init<T: CacheCostResolver>(config: Config, costResolver: T) where T.Object == Value {
+    init<T: MemoryCostResolver>(config: Config, memoryCostResolver: T) where T.Object == Value {
         self.config = config
-        self.costResolver = AnyCacheCostResolverBox(resolver: costResolver)
+        self.memoryCostResolver = AnyMemoryCostResolverBox(resolver: memoryCostResolver)
         
         cache.totalCostLimit = config.maxCacheSize
         cache.totalCountLimit = nil
@@ -82,7 +82,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         
         object = weakCache.object(forKey: key)
         if let object = object {
-            let cost = costResolver.cost(for: object)
+            let cost = memoryCostResolver.cost(for: object)
             cache.setValue(object, forKey: key, cost: cost)
         }
         

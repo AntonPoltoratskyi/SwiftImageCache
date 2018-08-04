@@ -1,5 +1,5 @@
 //
-//  ImageCacheCostResolver.swift
+//  ImageCostResolver.swift
 //  SwiftImageCache
 //
 //  Created by Anton Poltoratskyi on 28.07.2018.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public final class ImageCacheCostResolver: CacheCostResolver {
+public final class ImageCostResolver: MemoryCostResolver {
     
     public func cost(for object: UIImage) -> Int {
         let scale = object.scale

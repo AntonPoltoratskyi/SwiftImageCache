@@ -1,5 +1,5 @@
 //
-//  AnyCacheCostResolver.swift
+//  AnyMemoryCostResolver.swift
 //  SwiftImageCache
 //
 //  Created by Anton Poltoratskyi on 28.07.2018.
@@ -8,15 +8,15 @@
 
 import Foundation
 
-/// Type eraser for CacheCostResolver protocol
-public class AnyCacheCostResolver<Object>: CacheCostResolver {
+/// Type eraser for MemoryCostResolver protocol
+public class AnyMemoryCostResolver<Object>: MemoryCostResolver {
     
     public func cost(for object: Object) -> Int {
         fatalError("\(#function) not implemented")
     }
 }
 
-public final class AnyCacheCostResolverBox<Resolver: CacheCostResolver>: AnyCacheCostResolver<Resolver.Object> {
+public final class AnyMemoryCostResolverBox<Resolver: MemoryCostResolver>: AnyMemoryCostResolver<Resolver.Object> {
     
     private let resolver: Resolver
     

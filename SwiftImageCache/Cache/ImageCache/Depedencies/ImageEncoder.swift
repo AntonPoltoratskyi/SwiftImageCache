@@ -12,16 +12,10 @@ public protocol ImageEncoder: class {
     func encode(image: UIImage) -> Data?
 }
 
-public final class PNGImageEncoder: ImageEncoder {
-
-    public func encode(image: UIImage) -> Data? {
-        return UIImagePNGRepresentation(image)
-    }
-}
-
-public final class JPEGImageEncoder: ImageEncoder {
+/// Supports default 'jpeg' and 'png' format.
+public final class DefaultImageEncoder: ImageEncoder {
     
     public func encode(image: UIImage) -> Data? {
-        return UIImageJPEGRepresentation(image, 1)
+        return UIImagePNGRepresentation(image)
     }
 }

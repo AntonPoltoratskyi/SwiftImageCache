@@ -1,5 +1,5 @@
 //
-//  CacheCostResolver.swift
+//  MemoryCostResolver.swift
 //  SwiftImageCache
 //
 //  Created by Anton Poltoratskyi on 28.07.2018.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol CacheCostResolver: class {
+public protocol MemoryCostResolver: class {
     associatedtype Object
     func cost(for object: Object) -> Int
 }

@@ -9,12 +9,12 @@
 import Foundation
 
 public protocol FileResolver: class {
-    func filename(for key: ImageCacheKey) -> String
+    func filename(for key: ImageKey) -> String
 }
 
 final class DefaultFileResolver: FileResolver {
     
-    func filename(for key: ImageCacheKey) -> String {
+    func filename(for key: ImageKey) -> String {
         // TODO: MD5
         return key.absoluteString
     }

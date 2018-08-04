@@ -11,9 +11,9 @@
 		8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7B20FB4F160015164D /* ImageCache.swift */; };
 		8510BA8120FB53060015164D /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA8020FB53060015164D /* MemoryCache.swift */; };
 		8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA8720FB5D9C0015164D /* FiniteCache.swift */; };
-		85112246210CE9E00038D6BF /* CacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112245210CE9E00038D6BF /* CacheCostResolver.swift */; };
-		85112248210CECED0038D6BF /* ImageCacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */; };
-		8511224A210CED0B0038D6BF /* AnyCacheCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */; };
+		85112246210CE9E00038D6BF /* MemoryCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112245210CE9E00038D6BF /* MemoryCostResolver.swift */; };
+		85112248210CECED0038D6BF /* ImageCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112247210CECED0038D6BF /* ImageCostResolver.swift */; };
+		8511224A210CED0B0038D6BF /* AnyMemoryCostResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112249210CED0B0038D6BF /* AnyMemoryCostResolver.swift */; };
 		8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8511224E210CF11B0038D6BF /* ImageCacheInput.swift */; };
 		85112252210D02420038D6BF /* FileResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112251210D02420038D6BF /* FileResolver.swift */; };
 		85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112253210D10FC0038D6BF /* ImageDecoder.swift */; };
@@ -26,9 +26,9 @@
 		8510BA7B20FB4F160015164D /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		8510BA8020FB53060015164D /* MemoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCache.swift; sourceTree = "<group>"; };
 		8510BA8720FB5D9C0015164D /* FiniteCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiniteCache.swift; sourceTree = "<group>"; };
-		85112245210CE9E00038D6BF /* CacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheCostResolver.swift; sourceTree = "<group>"; };
-		85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheCostResolver.swift; sourceTree = "<group>"; };
-		85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCacheCostResolver.swift; sourceTree = "<group>"; };
+		85112245210CE9E00038D6BF /* MemoryCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCostResolver.swift; sourceTree = "<group>"; };
+		85112247210CECED0038D6BF /* ImageCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCostResolver.swift; sourceTree = "<group>"; };
+		85112249210CED0B0038D6BF /* AnyMemoryCostResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyMemoryCostResolver.swift; sourceTree = "<group>"; };
 		8511224E210CF11B0038D6BF /* ImageCacheInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheInput.swift; sourceTree = "<group>"; };
 		85112251210D02420038D6BF /* FileResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileResolver.swift; sourceTree = "<group>"; };
 		85112253210D10FC0038D6BF /* ImageDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDecoder.swift; sourceTree = "<group>"; };
@@ -99,9 +99,9 @@
 		851B7AC42110D54C00C95747 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
-				85112245210CE9E00038D6BF /* CacheCostResolver.swift */,
-				85112249210CED0B0038D6BF /* AnyCacheCostResolver.swift */,
-				85112247210CECED0038D6BF /* ImageCacheCostResolver.swift */,
+				85112245210CE9E00038D6BF /* MemoryCostResolver.swift */,
+				85112249210CED0B0038D6BF /* AnyMemoryCostResolver.swift */,
+				85112247210CECED0038D6BF /* ImageCostResolver.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -213,15 +213,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */,
-				85112248210CECED0038D6BF /* ImageCacheCostResolver.swift in Sources */,
+				85112248210CECED0038D6BF /* ImageCostResolver.swift in Sources */,
 				85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */,
 				8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */,
 				8510BA8120FB53060015164D /* MemoryCache.swift in Sources */,
 				8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */,
-				8511224A210CED0B0038D6BF /* AnyCacheCostResolver.swift in Sources */,
+				8511224A210CED0B0038D6BF /* AnyMemoryCostResolver.swift in Sources */,
 				8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */,
 				851B7AC32110CFF500C95747 /* ImageEncoder.swift in Sources */,
-				85112246210CE9E00038D6BF /* CacheCostResolver.swift in Sources */,
+				85112246210CE9E00038D6BF /* MemoryCostResolver.swift in Sources */,
 				85112252210D02420038D6BF /* FileResolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

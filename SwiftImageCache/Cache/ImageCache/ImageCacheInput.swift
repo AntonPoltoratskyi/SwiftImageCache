@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias ImageCacheKey = URL
+public typealias ImageKey = URL
 
 public protocol ImageCacheInput: class {
     var maxMemoryCost: Int? { get set }
@@ -17,9 +17,9 @@ public protocol ImageCacheInput: class {
     var diskCacheSize: Int { get }
     var discCacheCount: Int { get }
     
-    func image(forKey key: ImageCacheKey) -> UIImage?
-    func removeImage(forKey key: ImageCacheKey)
-    func addImage(_ image: UIImage, forKey key: ImageCacheKey)
+    func image(forKey key: ImageKey) -> UIImage?
+    func removeImage(forKey key: ImageKey)
+    func addImage(_ image: UIImage, forKey key: ImageKey)
     
     func clearMemory()
     func clearDisk()
