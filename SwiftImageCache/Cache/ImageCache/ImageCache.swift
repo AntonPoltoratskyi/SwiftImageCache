@@ -48,7 +48,7 @@ public final class ImageCache: ImageCacheInput {
     
     public init(config: Config, dependencies: Dependencies) {
         self.config = config
-        self.memoryCache = MemoryCache(config: .init(), costResolver: ImageCostResolver())
+        self.memoryCache = MemoryCache(config: .init(), memoryCostResolver: ImageCostResolver())
         self.fileResolver = dependencies.fileResolver
         self.imageEncoder = dependencies.imageEncoder
         self.imageDecoder = dependencies.imageDecoder

@@ -19,6 +19,10 @@
 		85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85112253210D10FC0038D6BF /* ImageDecoder.swift */; };
 		851B7AC32110CFF500C95747 /* ImageEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851B7AC22110CFF500C95747 /* ImageEncoder.swift */; };
 		8566886B20F78BAD00BC8422 /* SwiftImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 8566886920F78BAD00BC8422 /* SwiftImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		85E36BB121161AC40039C5F7 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E36BB021161AC40039C5F7 /* MD5.swift */; };
+		85E36BB4211620000039C5F7 /* Array+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E36BB3211620000039C5F7 /* Array+MD5.swift */; };
+		85E36BB6211620550039C5F7 /* Data+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E36BB5211620550039C5F7 /* Data+MD5.swift */; };
+		85E36BB82116223E0039C5F7 /* String+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E36BB72116223E0039C5F7 /* String+MD5.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +40,10 @@
 		8566886620F78BAD00BC8422 /* SwiftImageCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftImageCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8566886920F78BAD00BC8422 /* SwiftImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftImageCache.h; sourceTree = "<group>"; };
 		8566886A20F78BAD00BC8422 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		85E36BB021161AC40039C5F7 /* MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
+		85E36BB3211620000039C5F7 /* Array+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MD5.swift"; sourceTree = "<group>"; };
+		85E36BB5211620550039C5F7 /* Data+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+MD5.swift"; sourceTree = "<group>"; };
+		85E36BB72116223E0039C5F7 /* String+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +100,7 @@
 				85112251210D02420038D6BF /* FileResolver.swift */,
 				85112253210D10FC0038D6BF /* ImageDecoder.swift */,
 				851B7AC22110CFF500C95747 /* ImageEncoder.swift */,
+				85E36BB221161B620039C5F7 /* MD5 */,
 			);
 			path = Depedencies;
 			sourceTree = "<group>";
@@ -131,6 +140,17 @@
 				8510BA8320FB53180015164D /* Cache */,
 			);
 			path = SwiftImageCache;
+			sourceTree = "<group>";
+		};
+		85E36BB221161B620039C5F7 /* MD5 */ = {
+			isa = PBXGroup;
+			children = (
+				85E36BB021161AC40039C5F7 /* MD5.swift */,
+				85E36BB3211620000039C5F7 /* Array+MD5.swift */,
+				85E36BB5211620550039C5F7 /* Data+MD5.swift */,
+				85E36BB72116223E0039C5F7 /* String+MD5.swift */,
+			);
+			path = MD5;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,14 +234,18 @@
 			files = (
 				8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */,
 				85112248210CECED0038D6BF /* ImageCostResolver.swift in Sources */,
+				85E36BB121161AC40039C5F7 /* MD5.swift in Sources */,
 				85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */,
 				8510BA8820FB5D9C0015164D /* FiniteCache.swift in Sources */,
 				8510BA8120FB53060015164D /* MemoryCache.swift in Sources */,
 				8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */,
 				8511224A210CED0B0038D6BF /* AnyMemoryCostResolver.swift in Sources */,
+				85E36BB6211620550039C5F7 /* Data+MD5.swift in Sources */,
 				8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */,
 				851B7AC32110CFF500C95747 /* ImageEncoder.swift in Sources */,
 				85112246210CE9E00038D6BF /* MemoryCostResolver.swift in Sources */,
+				85E36BB82116223E0039C5F7 /* String+MD5.swift in Sources */,
+				85E36BB4211620000039C5F7 /* Array+MD5.swift in Sources */,
 				85112252210D02420038D6BF /* FileResolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
