@@ -16,6 +16,7 @@ final class DefaultFileResolver: FileResolver {
     
     func filename(for key: ImageKey) -> String {
         let string = key.absoluteString
-        return "\(string.md5).\(key.pathExtension)"
+        let fileExtension = key.pathExtension
+        return fileExtension.isEmpty ? string.md5 : "\(string.md5).\(fileExtension)"
     }
 }

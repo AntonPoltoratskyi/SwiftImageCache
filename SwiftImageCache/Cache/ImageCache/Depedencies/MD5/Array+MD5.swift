@@ -14,11 +14,11 @@ extension Array where Element == UInt8 {
     
     var hexRepresentation: String {
         return reduce("") { result, byte in
-            var s = String(byte, radix: 16)
-            if s.count == 1 {
-                s = "0" + s
+            var element = String(byte, radix: 16)
+            if element.count == 1 {
+                element = "0\(element)"
             }
-            return result + s
+            return result + element
         }
     }
 }
