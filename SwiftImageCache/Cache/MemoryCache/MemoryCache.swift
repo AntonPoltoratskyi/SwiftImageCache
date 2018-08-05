@@ -38,7 +38,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         self.memoryCostResolver = AnyMemoryCostResolverBox(resolver: memoryCostResolver)
         
         cache.totalCostLimit = config.maxCacheSize
-        cache.totalCountLimit = nil
+        cache.totalCountLimit = config.maxCacheItemsCount
         
         maxMemoryCost = cache.totalCostLimit
         
@@ -118,20 +118,24 @@ extension MemoryCache {
     
     public struct Config {
         
+        static var `default`: Config {
+            return Config(isWeakCacheEnabled: true, maxCacheItemsCount: nil, maxCacheSize: nil)
+        }
+        
         /// when true - cache will store weak references to currently retained cache objects
         public let isWeakCacheEnabled: Bool
         
-        /// Max cache age in seconds
-        public let maxCacheAge: Int
+        /// Max count of cached objects
+        public let maxCacheItemsCount: Int?
         
         /// Max cache size in bytes
         public let maxCacheSize: Int?
         
-        public init(isWeakCacheEnabled: Bool = true,
-                    maxCacheAge: Int = 60 * 60 * 24 * 7,
-                    maxCacheSize: Int? = nil) {
+        public init(isWeakCacheEnabled: Bool,
+                    maxCacheItemsCount: Int?,
+                    maxCacheSize: Int?) {
             self.isWeakCacheEnabled = isWeakCacheEnabled
-            self.maxCacheAge = maxCacheAge
+            self.maxCacheItemsCount = maxCacheItemsCount
             self.maxCacheSize = maxCacheSize
         }
     }

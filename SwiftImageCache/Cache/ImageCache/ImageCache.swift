@@ -48,7 +48,7 @@ public final class ImageCache: ImageCacheInput {
     
     public init(config: Config, dependencies: Dependencies) {
         self.config = config
-        self.memoryCache = MemoryCache(config: .init(), memoryCostResolver: ImageCostResolver())
+        self.memoryCache = MemoryCache(config: .default, memoryCostResolver: ImageCostResolver())
         self.fileResolver = dependencies.fileResolver
         self.imageEncoder = dependencies.imageEncoder
         self.imageDecoder = dependencies.imageDecoder
@@ -115,15 +115,110 @@ public final class ImageCache: ImageCacheInput {
     
     @objc private func applicationDidEnterBackground() {
         // delete old files in background asynchronously
-        deleteExpiredFiles()
+        let application = UIApplication.shared
+        
+        var taskIdentifier: UIBackgroundTaskIdentifier = 0
+        
+        func finishTask() {
+            application.endBackgroundTask(taskIdentifier)
+            taskIdentifier = UIBackgroundTaskInvalid
+        }
+        
+        taskIdentifier = application.beginBackgroundTask {
+            finishTask()
+        }
+        deleteExpiredFiles {
+            finishTask()
+        }
     }
     
     @objc private func applicationWillTerminate() {
         deleteExpiredFiles()
     }
     
-    private func deleteExpiredFiles() {
-        // TODO: delete old files
+    private func deleteExpiredFiles(completion: (() -> Void)? = nil) {
+        diskQueue.async {
+            let expirationKey = self.config.expirationResourceKey
+            let resourceKeys: Set<URLResourceKey> = [.isDirectoryKey, expirationKey, .totalFileAllocatedSizeKey]
+
+            guard let fileEnumerator = self.fileManager.enumerator(
+                at: self.config.directoryURL,
+                includingPropertiesForKeys: Array(resourceKeys),
+                options: .skipsHiddenFiles,
+                errorHandler: nil) else {
+                    return
+            }
+            
+            let expirationDate = Date(timeIntervalSinceNow: -self.config.maxDiskCacheAge)
+            
+            var cache: [URL: URLResourceValues] = [:]
+            var currentCacheSize = 0
+            
+            var expiredURLs = [URL]()
+            
+            // 1. Delete expired files
+            
+            for url in fileEnumerator {
+                guard let url = url as? URL else { continue }
+                do {
+                    let resourceValues = try url.resourceValues(forKeys: resourceKeys)
+                    if let isDirectory = resourceValues.isDirectory, isDirectory {
+                        continue
+                    }
+                    if let modifiedDate = resourceValues.date(for: self.config.diskFileExpirationType),
+                        modifiedDate < expirationDate {
+                        expiredURLs.append(url)
+                        continue
+                    }
+                    
+                    if let totalSize = resourceValues.totalFileAllocatedSize {
+                        currentCacheSize += totalSize
+                        cache[url] = resourceValues
+                    }
+                } catch {
+                    debugPrint(error)
+                }
+            }
+            
+            for url in expiredURLs {
+                try? self.fileManager.removeItem(at: url)
+            }
+            
+            // 2. Reduce cache size if current size > max size
+            self.reduceDiskCacheSize(in: cache, currentCacheSize: currentCacheSize)
+            
+            completion?()
+        }
+    }
+    
+    private func reduceDiskCacheSize(in cache: [URL: URLResourceValues], currentCacheSize: Int) {
+        guard let maxCacheSize = config.maxDiskCacheSize, currentCacheSize > maxCacheSize else {
+            return
+        }
+        let sortedFiles = cache.sorted {
+            guard let lhs = $0.value.contentModificationDate, let rhs = $1.value.contentModificationDate else {
+                return false
+            }
+            return lhs < rhs
+        }
+        
+        let desiredCacheSize = maxCacheSize / 2
+        var currentCacheSize = currentCacheSize
+        
+        for (url, resourceValue) in sortedFiles {
+            do {
+                try fileManager.removeItem(at: url)
+                guard let size = resourceValue.totalFileAllocatedSize else {
+                    continue
+                }
+                currentCacheSize -= size
+                guard currentCacheSize > desiredCacheSize else {
+                    break
+                }
+            } catch {
+                debugPrint(error)
+            }
+        }
     }
 }
 
@@ -202,12 +297,29 @@ extension ImageCache {
 extension ImageCache {
     
     public struct Config {
+        
+        public enum DiskFileExpirationType {
+            case accessDate
+            case modificationDate
+        }
+        
         public let directoryURL: URL
+        public let diskFileExpirationType: DiskFileExpirationType
+        public let maxDiskCacheAge: TimeInterval
+        public let maxDiskCacheSize: Int?
         public let isMemoryCacheEnabled: Bool
         public let isExcludedFromBackup: Bool
         
-        public init(directoryURL: URL, isMemoryCacheEnabled: Bool, isExcludedFromBackup: Bool) {
+        public init(directoryURL: URL,
+                    diskFileExpirationType: DiskFileExpirationType,
+                    isMemoryCacheEnabled: Bool,
+                    maxDiskCacheAge: TimeInterval = 60 * 60 * 24 * 7,
+                    maxDiskCacheSize: Int? = nil,
+                    isExcludedFromBackup: Bool) {
             self.directoryURL = directoryURL
+            self.diskFileExpirationType = diskFileExpirationType
+            self.maxDiskCacheAge = maxDiskCacheAge
+            self.maxDiskCacheSize = maxDiskCacheSize
             self.isMemoryCacheEnabled = isMemoryCacheEnabled
             self.isExcludedFromBackup = isExcludedFromBackup
         }
@@ -222,6 +334,32 @@ extension ImageCache {
             self.fileResolver = fileResolver
             self.imageEncoder = imageEncoder
             self.imageDecoder = imageDecoder
+        }
+    }
+}
+
+// MARK: - Extensions
+
+private extension ImageCache.Config {
+    
+    var expirationResourceKey: URLResourceKey {
+        switch diskFileExpirationType {
+        case .accessDate:
+            return .contentAccessDateKey
+        case .modificationDate:
+            return .contentModificationDateKey
+        }
+    }
+}
+
+private extension URLResourceValues {
+    
+    func date(for expirationType: ImageCache.Config.DiskFileExpirationType) -> Date? {
+        switch expirationType {
+        case .accessDate:
+            return contentAccessDate
+        case .modificationDate:
+            return contentModificationDate
         }
     }
 }
