@@ -1,5 +1,5 @@
 //
-//  String+MD5.swift
+//  MD5+Bytes.swift
 //  SwiftImageCache
 //
 //  Created by Anton Poltoratskyi on 04.08.2018.
@@ -7,12 +7,13 @@
 //
 
 extension String {
-    
     var bytes: [UInt8] {
         return data(using: .utf8, allowLossyConversion: true)?.bytes ?? Array(utf8)
     }
-    
-    var md5: String {
-        return bytes.md5.hexRepresentation
+}
+
+extension Data {
+    var bytes: [UInt8] {
+        return Array(self)
     }
 }

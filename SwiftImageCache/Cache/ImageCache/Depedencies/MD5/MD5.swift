@@ -2,10 +2,11 @@
 //  MD5.swift
 //  SwiftImageCache
 //
-//  Created by Anton Poltoratskyi on 04.08.2018.
-//  Copyright © 2018 Anton Poltoratskyi. All rights reserved.
-//
-//  Original software copyright:
+//  Currently, import CommonCrypto into Swift framework is problematic. More detail here:
+//  https://stackoverflow.com/questions/25248598/importing-commoncrypto-in-a-swift-framework
+//  So, we are using some parts of source code from CryptoSwift that only includes MD5.
+//  The original software can be found at: https://github.com/krzyzanowskim/CryptoSwift
+//  This is the original copyright:
 //
 //  CryptoSwift
 //
@@ -206,30 +207,6 @@ extension Updatable {
     }
 }
 
-// MARK: - UInt8 Extensions
-
-/** Bits */
-extension UInt8 {
-    
-    /** array of bits */
-    public func bits() -> [Bit] {
-        let totalBitsCount = MemoryLayout<UInt8>.size * 8
-        
-        var bitsArray = [Bit](repeating: Bit.zero, count: totalBitsCount)
-        
-        for j in 0..<totalBitsCount {
-            let bitVal: UInt8 = 1 << UInt8(totalBitsCount - 1 - j)
-            let check = self & bitVal
-            
-            if check != 0 {
-                bitsArray[j] = Bit.one
-            }
-        }
-        return bitsArray
-    }
-}
-
-
 // MARK: - Bit
 
 public enum Bit: Int {
@@ -238,7 +215,7 @@ public enum Bit: Int {
 }
 
 
-// MARK: - Batched Collectinon
+// MARK: - Batched Collection
 
 struct BatchedCollectionIndex<Base: Collection> {
     let range: Range<Base.Index>
@@ -283,7 +260,7 @@ struct BatchedCollection<Base: Collection>: Collection {
     }
 }
 
-// MARK: - STD Collections
+// MARK: - Collections
 
 extension Collection {
     func batched(by size: Int) -> BatchedCollection<Self> {
@@ -298,6 +275,27 @@ extension Array {
 }
 
 // MARK: - Integers
+
+/** Bits */
+extension UInt8 {
+    
+    /** array of bits */
+    public func bits() -> [Bit] {
+        let totalBitsCount = MemoryLayout<UInt8>.size * 8
+        
+        var bitsArray = [Bit](repeating: Bit.zero, count: totalBitsCount)
+        
+        for j in 0..<totalBitsCount {
+            let bitVal: UInt8 = 1 << UInt8(totalBitsCount - 1 - j)
+            let check = self & bitVal
+            
+            if check != 0 {
+                bitsArray[j] = Bit.one
+            }
+        }
+        return bitsArray
+    }
+}
 
 extension FixedWidthInteger {
     @_transparent
