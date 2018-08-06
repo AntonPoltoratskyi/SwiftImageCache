@@ -25,6 +25,10 @@ public final class ImageCache: ImageCacheInput {
     
     private let diskQueue = DispatchQueue(label: "com.polant.SwiftImageCache.ImageCache", qos: .default)
     
+    private var cacheDirectoryURL: URL {
+        return config.directoryURL
+    }
+    
     public var maxMemoryCost: Int? {
         get { return memoryCache.maxMemoryCost }
         set { memoryCache.maxMemoryCost = newValue }
@@ -36,11 +40,37 @@ public final class ImageCache: ImageCacheInput {
     }
     
     public var diskCacheSize: Int {
-        return 0 // TODO: calculate cache size on the disk
+        var cacheSize = 0
+        diskQueue.sync {
+            let directoryURL = self.cacheDirectoryURL
+            guard let fileEnumerator = self.fileManager.enumerator(atPath: directoryURL.path) else {
+                return
+            }
+            for filename in fileEnumerator {
+                guard let filename = filename as? String else {
+                    continue
+                }
+                let fileURL = directoryURL.appendingPathComponent(filename)
+                do {
+                    let attributes = try self.fileManager.attributesOfItem(atPath: fileURL.path)
+                    if let fileSize = attributes[.size] as? Int {
+                        cacheSize += fileSize
+                    }
+                } catch {
+                    debugPrint(error)
+                }
+            }
+        }
+        return cacheSize
     }
     
     public var discCacheCount: Int {
-        return 0 // TODO: calculate cache count on the disk
+        var count = 0
+        diskQueue.sync {
+            let fileEnumerator = self.fileManager.enumerator(atPath: self.cacheDirectoryURL.path)
+            count = fileEnumerator?.allObjects.count ?? 0
+        }
+        return count
     }
     
     
@@ -104,7 +134,7 @@ public final class ImageCache: ImageCacheInput {
     
     public func clearDisk() {
         diskQueue.async {
-            let url = self.config.directoryURL
+            let url = self.cacheDirectoryURL
             try? self.fileManager.removeItem(at: url)
             try? self.fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
         }
@@ -117,11 +147,14 @@ public final class ImageCache: ImageCacheInput {
         // delete old files in background asynchronously
         let application = UIApplication.shared
         
-        var taskIdentifier: UIBackgroundTaskIdentifier = 0
+        var taskIdentifier: UIBackgroundTaskIdentifier?
         
         func finishTask() {
-            application.endBackgroundTask(taskIdentifier)
-            taskIdentifier = UIBackgroundTaskInvalid
+            guard let task = taskIdentifier else {
+                return
+            }
+            application.endBackgroundTask(task)
+            taskIdentifier = nil
         }
         
         taskIdentifier = application.beginBackgroundTask {
@@ -142,7 +175,7 @@ public final class ImageCache: ImageCacheInput {
             let resourceKeys: Set<URLResourceKey> = [.isDirectoryKey, expirationKey, .totalFileAllocatedSizeKey]
 
             guard let fileEnumerator = self.fileManager.enumerator(
-                at: self.config.directoryURL,
+                at: self.cacheDirectoryURL,
                 includingPropertiesForKeys: Array(resourceKeys),
                 options: .skipsHiddenFiles,
                 errorHandler: nil) else {
@@ -226,12 +259,12 @@ public final class ImageCache: ImageCacheInput {
 
 extension ImageCache {
     
-    private func cacheFilename(forKey key: ImageKey) -> String {
+    private func diskFilename(forKey key: ImageKey) -> String {
         return fileResolver.filename(for: key)
     }
     
-    private func cacheURL(for filename: String) -> URL {
-        return config.directoryURL.appendingPathComponent(filename)
+    private func diskURL(for filename: String) -> URL {
+        return cacheDirectoryURL.appendingPathComponent(filename)
     }
     
     private func imageFromMemory(forKey key: ImageKey) -> UIImage? {
@@ -242,8 +275,8 @@ extension ImageCache {
     }
     
     private func imageFromDisk(forKey key: ImageKey) -> UIImage? {
-        let filename = cacheFilename(forKey: key)
-        let fileURL = cacheURL(for: filename)
+        let filename = diskFilename(forKey: key)
+        let fileURL = diskURL(for: filename)
         do {
             let data = try Data(contentsOf: fileURL)
             return imageDecoder.image(from: data)
@@ -262,16 +295,15 @@ extension ImageCache {
         guard let data = imageEncoder.encode(image: image) else {
             return
         }
-        let filename = cacheFilename(forKey: key)
+        let filename = diskFilename(forKey: key)
         try saveImageDataToDisk(data, filename: filename)
     }
     
     private func saveImageDataToDisk(_ data: Data, filename: String) throws {
-        let cacheContainerURL = config.directoryURL
-        if !fileManager.fileExists(atPath: cacheContainerURL.path) {
-            try fileManager.createDirectory(atPath: cacheContainerURL.path, withIntermediateDirectories: true, attributes: nil)
+        if !fileManager.fileExists(atPath: cacheDirectoryURL.path) {
+            try fileManager.createDirectory(atPath: cacheDirectoryURL.path, withIntermediateDirectories: true, attributes: nil)
         }
-        var url = cacheURL(for: filename)
+        var url = diskURL(for: filename)
         try data.write(to: url)
         
         if config.isExcludedFromBackup {
@@ -286,8 +318,8 @@ extension ImageCache {
     }
     
     private func removeImageFromDisk(forKey key: ImageKey) throws {
-        let filename = cacheFilename(forKey: key)
-        let fileURL = cacheURL(for: filename)
+        let filename = diskFilename(forKey: key)
+        let fileURL = diskURL(for: filename)
         try fileManager.removeItem(at: fileURL)
     }
 }
