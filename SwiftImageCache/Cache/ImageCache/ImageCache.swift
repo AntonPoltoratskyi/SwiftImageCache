@@ -42,24 +42,7 @@ public final class ImageCache: ImageCacheInput {
     public var diskCacheSize: Int {
         var cacheSize = 0
         diskQueue.sync {
-            let directoryURL = self.cacheDirectoryURL
-            guard let fileEnumerator = self.fileManager.enumerator(atPath: directoryURL.path) else {
-                return
-            }
-            for filename in fileEnumerator {
-                guard let filename = filename as? String else {
-                    continue
-                }
-                let fileURL = directoryURL.appendingPathComponent(filename)
-                do {
-                    let attributes = try self.fileManager.attributesOfItem(atPath: fileURL.path)
-                    if let fileSize = attributes[.size] as? Int {
-                        cacheSize += fileSize
-                    }
-                } catch {
-                    debugPrint(error)
-                }
-            }
+            cacheSize = self.calculateDiskCacheSize()
         }
         return cacheSize
     }
@@ -67,8 +50,7 @@ public final class ImageCache: ImageCacheInput {
     public var discCacheCount: Int {
         var count = 0
         diskQueue.sync {
-            let fileEnumerator = self.fileManager.enumerator(atPath: self.cacheDirectoryURL.path)
-            count = fileEnumerator?.allObjects.count ?? 0
+            count = self.calculateDiskCacheItemsCount()
         }
         return count
     }
@@ -168,12 +150,81 @@ public final class ImageCache: ImageCacheInput {
     @objc private func applicationWillTerminate() {
         deleteExpiredFiles()
     }
+}
+
+// MARK: - Utils
+
+extension ImageCache {
+    
+    private func diskFilename(forKey key: ImageKey) -> String {
+        return fileResolver.filename(for: key)
+    }
+    
+    private func diskURL(for filename: String) -> URL {
+        return cacheDirectoryURL.appendingPathComponent(filename)
+    }
+    
+    private func imageFromMemory(forKey key: ImageKey) -> UIImage? {
+        guard config.isMemoryCacheEnabled else {
+            return nil
+        }
+        return memoryCache.object(forKey: key as NSURL)
+    }
+    
+    private func imageFromDisk(forKey key: ImageKey) -> UIImage? {
+        let filename = diskFilename(forKey: key)
+        let fileURL = diskURL(for: filename)
+        do {
+            let data = try Data(contentsOf: fileURL)
+            return imageDecoder.image(from: data)
+        } catch {
+            return nil
+        }
+    }
+    
+    private func saveImageToMemory(_ image: UIImage, forKey key: ImageKey) {
+        if config.isMemoryCacheEnabled {
+            memoryCache.setObject(image, forKey: key as NSURL)
+        }
+    }
+    
+    private func saveImageToDisk(_ image: UIImage, forKey key: ImageKey) throws {
+        guard let data = imageEncoder.encode(image: image) else {
+            return
+        }
+        let filename = diskFilename(forKey: key)
+        try saveImageDataToDisk(data, filename: filename)
+    }
+    
+    private func saveImageDataToDisk(_ data: Data, filename: String) throws {
+        if !fileManager.fileExists(atPath: cacheDirectoryURL.path) {
+            try fileManager.createDirectory(atPath: cacheDirectoryURL.path, withIntermediateDirectories: true, attributes: nil)
+        }
+        var url = diskURL(for: filename)
+        try data.write(to: url)
+        
+        if config.isExcludedFromBackup {
+            var resourceValues = URLResourceValues()
+            resourceValues.isExcludedFromBackup = true
+            try url.setResourceValues(resourceValues)
+        }
+    }
+    
+    private func removeImageFromMemory(forKey key: ImageKey) {
+        memoryCache.removeObject(forKey: key as NSURL)
+    }
+    
+    private func removeImageFromDisk(forKey key: ImageKey) throws {
+        let filename = diskFilename(forKey: key)
+        let fileURL = diskURL(for: filename)
+        try fileManager.removeItem(at: fileURL)
+    }
     
     private func deleteExpiredFiles(completion: (() -> Void)? = nil) {
         diskQueue.async {
             let expirationKey = self.config.expirationResourceKey
             let resourceKeys: Set<URLResourceKey> = [.isDirectoryKey, expirationKey, .totalFileAllocatedSizeKey]
-
+            
             guard let fileEnumerator = self.fileManager.enumerator(
                 at: self.cacheDirectoryURL,
                 includingPropertiesForKeys: Array(resourceKeys),
@@ -253,74 +304,45 @@ public final class ImageCache: ImageCacheInput {
             }
         }
     }
-}
-
-// MARK: - Utils
-
-extension ImageCache {
     
-    private func diskFilename(forKey key: ImageKey) -> String {
-        return fileResolver.filename(for: key)
-    }
-    
-    private func diskURL(for filename: String) -> URL {
-        return cacheDirectoryURL.appendingPathComponent(filename)
-    }
-    
-    private func imageFromMemory(forKey key: ImageKey) -> UIImage? {
-        guard config.isMemoryCacheEnabled else {
-            return nil
+    private func calculateDiskCacheItemsCount() -> Int {
+        guard let fileEnumerator = fileManager.enumerator(atPath: cacheDirectoryURL.path) else {
+            return 0
         }
-        return memoryCache.object(forKey: key as NSURL)
+        return fileEnumerator.allObjects.count
     }
     
-    private func imageFromDisk(forKey key: ImageKey) -> UIImage? {
-        let filename = diskFilename(forKey: key)
-        let fileURL = diskURL(for: filename)
-        do {
-            let data = try Data(contentsOf: fileURL)
-            return imageDecoder.image(from: data)
-        } catch {
-            return nil
-        }
-    }
-    
-    private func saveImageToMemory(_ image: UIImage, forKey key: ImageKey) {
-        if config.isMemoryCacheEnabled {
-            memoryCache.setObject(image, forKey: key as NSURL)
-        }
-    }
-    
-    private func saveImageToDisk(_ image: UIImage, forKey key: ImageKey) throws {
-        guard let data = imageEncoder.encode(image: image) else {
-            return
-        }
-        let filename = diskFilename(forKey: key)
-        try saveImageDataToDisk(data, filename: filename)
-    }
-    
-    private func saveImageDataToDisk(_ data: Data, filename: String) throws {
-        if !fileManager.fileExists(atPath: cacheDirectoryURL.path) {
-            try fileManager.createDirectory(atPath: cacheDirectoryURL.path, withIntermediateDirectories: true, attributes: nil)
-        }
-        var url = diskURL(for: filename)
-        try data.write(to: url)
+    private func calculateDiskCacheSize() -> Int {
+        let resourceKeys: Set<URLResourceKey> = [.isDirectoryKey, .totalFileAllocatedSizeKey]
         
-        if config.isExcludedFromBackup {
-            var resourceValues = URLResourceValues()
-            resourceValues.isExcludedFromBackup = true
-            try url.setResourceValues(resourceValues)
+        guard let fileEnumerator = fileManager.enumerator(
+            at: cacheDirectoryURL,
+            includingPropertiesForKeys: Array(resourceKeys),
+            options: .skipsHiddenFiles,
+            errorHandler: nil) else {
+                return 0
         }
-    }
-    
-    private func removeImageFromMemory(forKey key: ImageKey) {
-        memoryCache.removeObject(forKey: key as NSURL)
-    }
-    
-    private func removeImageFromDisk(forKey key: ImageKey) throws {
-        let filename = diskFilename(forKey: key)
-        let fileURL = diskURL(for: filename)
-        try fileManager.removeItem(at: fileURL)
+        
+        var cacheSize = 0
+        
+        for url in fileEnumerator {
+            guard let url = url as? URL else {
+                continue
+            }
+            do {
+                let resourceValues = try url.resourceValues(forKeys: resourceKeys)
+                if let isDirectory = resourceValues.isDirectory, isDirectory {
+                    continue
+                }
+                if let totalSize = resourceValues.totalFileAllocatedSize {
+                    cacheSize += totalSize
+                }
+            } catch {
+                debugPrint(error)
+            }
+        }
+        
+        return cacheSize
     }
 }
 
