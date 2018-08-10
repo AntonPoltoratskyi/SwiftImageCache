@@ -15,7 +15,7 @@ public protocol ImageCacheInput: class {
     var maxMemoryCount: Int? { get set }
     
     var diskCacheSize: Int { get }
-    var discCacheCount: Int { get }
+    var diskCacheCount: Int { get }
     
     func image(forKey key: ImageKey) -> UIImage?
     func removeImage(forKey key: ImageKey)

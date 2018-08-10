@@ -15,13 +15,13 @@ public final class ImageCache: ImageCacheInput {
     
     private let memoryCache: MemoryCache<NSURL, UIImage>
     
+    private let fileManager: FileManager
+    
     private let fileResolver: FileResolver
     
     private let imageEncoder: ImageEncoder
 
     private let imageDecoder: ImageDecoder
-    
-    private let fileManager: FileManager
     
     private let diskQueue = DispatchQueue(label: "com.polant.SwiftImageCache.ImageCache", qos: .default)
     
@@ -47,7 +47,7 @@ public final class ImageCache: ImageCacheInput {
         return cacheSize
     }
     
-    public var discCacheCount: Int {
+    public var diskCacheCount: Int {
         var count = 0
         diskQueue.sync {
             count = self.calculateDiskCacheItemsCount()
@@ -61,10 +61,10 @@ public final class ImageCache: ImageCacheInput {
     public init(config: Config, dependencies: Dependencies) {
         self.config = config
         self.memoryCache = MemoryCache(config: .default, memoryCostResolver: ImageCostResolver())
+        self.fileManager = .default
         self.fileResolver = dependencies.fileResolver
         self.imageEncoder = dependencies.imageEncoder
         self.imageDecoder = dependencies.imageDecoder
-        self.fileManager = .default
         
         let center = NotificationCenter.default
         
@@ -125,10 +125,9 @@ public final class ImageCache: ImageCacheInput {
     
     // MARK: - Notifications
     
+    /// Delete old files in background asynchronously
     @objc private func applicationDidEnterBackground() {
-        // delete old files in background asynchronously
         let application = UIApplication.shared
-        
         var taskIdentifier: UIBackgroundTaskIdentifier?
         
         func finishTask() {
@@ -147,6 +146,7 @@ public final class ImageCache: ImageCacheInput {
         }
     }
     
+    /// Delete old files before terminate
     @objc private func applicationWillTerminate() {
         deleteExpiredFiles()
     }

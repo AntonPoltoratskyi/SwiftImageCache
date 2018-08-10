@@ -12,6 +12,7 @@ public protocol FileResolver: class {
     func filename(for key: ImageKey) -> String
 }
 
+/// Default filename resolver with MD5 hash calculation.
 final class DefaultFileResolver: FileResolver {
     
     func filename(for key: ImageKey) -> String {
