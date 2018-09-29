@@ -13,7 +13,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
     private let config: Config
     
     /// Cache with ability to setup limits for byte size and count of objects.
-    private let cache: FiniteCache<Key, Value> = FiniteCache()
+    private let cache: LimitedCache<Key, Value> = LimitedCache()
     
     /// Cache that won't be cleared when memory warning occurs because values are retained by other objects.
     private let weakCache: NSMapTable<Key, Value> = NSMapTable(keyOptions: .strongMemory, valueOptions: .weakMemory)

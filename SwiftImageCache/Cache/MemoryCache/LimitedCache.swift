@@ -1,5 +1,5 @@
 //
-//  FiniteCache.swift
+//  LimitedCache.swift
 //  SwiftImageCache
 //
 //  Created by Anton Poltoratskyi on 15.07.2018.
@@ -13,7 +13,7 @@ import Foundation
  https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/NSCache.swift
  But own implementation is compatible with Swift value types.
  */
-public final class FiniteCache<Key: Hashable, Value> {
+public final class LimitedCache<Key: Hashable, Value> {
     
     private final class Entry {
         var key: Key
