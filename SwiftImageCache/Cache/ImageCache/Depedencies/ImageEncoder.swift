@@ -16,6 +16,6 @@ public protocol ImageEncoder: class {
 public final class DefaultImageEncoder: ImageEncoder {
     
     public func encode(image: UIImage) -> Data? {
-        return UIImagePNGRepresentation(image)
+        return image.pngData()
     }
 }

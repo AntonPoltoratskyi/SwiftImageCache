@@ -44,7 +44,7 @@ public final class MemoryCache<Key: AnyObject & Hashable, Value: AnyObject> {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveMemoryWarning),
-                                               name: .UIApplicationDidReceiveMemoryWarning,
+                                               name: UIApplication.didReceiveMemoryWarningNotification,
                                                object: nil)
     }
     

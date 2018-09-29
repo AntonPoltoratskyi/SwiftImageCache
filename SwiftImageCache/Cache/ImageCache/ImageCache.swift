@@ -70,12 +70,12 @@ public final class ImageCache: ImageCacheInput {
         
         center.addObserver(self,
                            selector: #selector(applicationWillTerminate),
-                           name: .UIApplicationWillTerminate,
+                           name: UIApplication.willTerminateNotification,
                            object: nil)
         
         center.addObserver(self,
                            selector: #selector(applicationDidEnterBackground),
-                           name: .UIApplicationDidEnterBackground,
+                           name: UIApplication.didEnterBackgroundNotification,
                            object: nil)
     }
     
