@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		850E61F02160097A00006AB4 /* DataDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850E61EF2160097A00006AB4 /* DataDownloader.swift */; };
+		850E61F221600C7400006AB4 /* DataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850E61F121600C7400006AB4 /* DataTask.swift */; };
 		8510BA7A20FB4E390015164D /* UIImageView+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7920FB4E390015164D /* UIImageView+Cache.swift */; };
 		8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA7B20FB4F160015164D /* ImageCache.swift */; };
 		8510BA8120FB53060015164D /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8510BA8020FB53060015164D /* MemoryCache.swift */; };
@@ -25,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		850E61EF2160097A00006AB4 /* DataDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDownloader.swift; sourceTree = "<group>"; };
+		850E61F121600C7400006AB4 /* DataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTask.swift; sourceTree = "<group>"; };
 		8510BA7920FB4E390015164D /* UIImageView+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Cache.swift"; sourceTree = "<group>"; };
 		8510BA7B20FB4F160015164D /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		8510BA8020FB53060015164D /* MemoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCache.swift; sourceTree = "<group>"; };
@@ -55,6 +59,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		850E61EE2160092D00006AB4 /* Downloader */ = {
+			isa = PBXGroup;
+			children = (
+				850E61EF2160097A00006AB4 /* DataDownloader.swift */,
+				850E61F121600C7400006AB4 /* DataTask.swift */,
+			);
+			path = Downloader;
+			sourceTree = "<group>";
+		};
 		8510BA8220FB53100015164D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +149,7 @@
 				8566886A20F78BAD00BC8422 /* Info.plist */,
 				8510BA8220FB53100015164D /* Extensions */,
 				8510BA8320FB53180015164D /* Cache */,
+				850E61EE2160092D00006AB4 /* Downloader */,
 			);
 			path = SwiftImageCache;
 			sourceTree = "<group>";
@@ -230,10 +244,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8510BA7C20FB4F160015164D /* ImageCache.swift in Sources */,
+				850E61F02160097A00006AB4 /* DataDownloader.swift in Sources */,
 				85112248210CECED0038D6BF /* ImageCostResolver.swift in Sources */,
 				85E36BB121161AC40039C5F7 /* MD5.swift in Sources */,
 				85112254210D10FC0038D6BF /* ImageDecoder.swift in Sources */,
 				8510BA8820FB5D9C0015164D /* LimitedCache.swift in Sources */,
+				850E61F221600C7400006AB4 /* DataTask.swift in Sources */,
 				8510BA8120FB53060015164D /* MemoryCache.swift in Sources */,
 				8511224F210CF11B0038D6BF /* ImageCacheInput.swift in Sources */,
 				8511224A210CED0B0038D6BF /* AnyMemoryCostResolver.swift in Sources */,
