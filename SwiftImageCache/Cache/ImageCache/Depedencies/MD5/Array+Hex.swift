@@ -8,13 +8,13 @@
 
 extension Array where Element == UInt8 {
     
-    var hexRepresentation: String {
-        return reduce("") { result, byte in
+    var hexValue: String {
+        return reduce(into: "") { result, byte in
             var element = String(byte, radix: 16)
             if element.count == 1 {
-                element = "0\(element)"
+                element.insert("0", at: element.startIndex)
             }
-            return result + element
+            return result.append(element)
         }
     }
 }

@@ -16,7 +16,7 @@ public protocol FileResolver: class {
 final class DefaultFileResolver: FileResolver {
     
     func filename(for key: ImageKey) -> String {
-        let md5 = MD5().calculate(for: key.absoluteString.bytes).hexRepresentation
+        let md5 = MD5().calculate(for: key.absoluteString.bytes).hexValue
         return key.pathExtension.isEmpty ? md5 : "\(md5).\(key.pathExtension)"
     }
 }
